@@ -1,9 +1,6 @@
 import { request } from "graphql-request";
-import { createConnection } from "typeorm";
 import { User } from "../entity/User";
-// import { startServer } from "..";
-
-const add = (a: number, b: number): number => a + b;
+import { startServer } from "../utils/startServer";
 
 const email = "boby2@test.si";
 const password = "test";
@@ -14,30 +11,28 @@ mutation {
 }
 `;
 
-// beforeAll(() => {
-//   return startServer();
-// });
+let getHost = () => "";
+
+beforeAll(async () => {
+  const app = await startServer();
+  const { port }: any = app.address();
+  console.log(port);
+  getHost = () => `http://127.0.0.1:${port}`;
+});
 
 describe("resolver block", () => {
-  test("add 3 + 5 to be 8", () => {
-    expect(add(3, 5)).toBe(8);
-  });
-
-  test("registering new user", async () => {
-    const response = await request("http://localhost:4000", query);
+  test("should register new user", async () => {
+    const response = await request(getHost(), query);
 
     expect(response).toEqual({ register: true });
-  });
+  }, 1000);
 
-  test("same data in db after registering", async done => {
-    await createConnection();
-
+  it("should find user in database", async () => {
     const users = await User.find({ where: { email } });
     const user = users[0];
 
     expect(users).toHaveLength(1);
     expect(user.email).toBe(email);
     expect(user.password).not.toBe(password);
-    done;
-  });
+  }, 1000);
 });
