@@ -19,7 +19,7 @@
     "typescript": "3.7.4"
   },
   "dependencies": {
-    "bcrypt": "^3.0.7",
+    "bcrypt": "^5.0.0",
     "graphql": "^14.5.8",
     "graphql-import": "^0.7.1",
     "graphql-yoga": "^1.18.3",
